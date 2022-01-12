@@ -1,6 +1,6 @@
 using EnrollmentService.Data;
-using EnrollmentService.Helper;
-using EnrollmentService.SyncDataServices.Http;
+using EnrollmentService.Helpers;
+using EnrollmentService.SyncHttpDataServices.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +34,6 @@ namespace EnrollmentService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("LocalConnection")));
 
@@ -74,18 +73,17 @@ namespace EnrollmentService
             services.AddScoped<IEnrollment, EnrollmentDAL>();
             services.AddScoped<IUser, UserDAL>();
 
-            services.AddHttpClient<IEnrollmentDataClient, HttpEnrollmentDataClient>();
-
             services.AddControllers().AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
-                .AddXmlDataContractSerializerFormatters();
+             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
+                 .AddXmlDataContractSerializerFormatters();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddHttpClient<IEnrollmentDataClient, HttpEnrollmentDataClient>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Project REST API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EnrollmentService", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                 var securitySchema = new OpenApiSecurityScheme
                 {
@@ -117,11 +115,10 @@ namespace EnrollmentService
                 app.UseDeveloperExceptionPage();
 
             }
-
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProjectRESTAPI v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EnrollmentService v1"));
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -132,6 +129,6 @@ namespace EnrollmentService
             {
                 endpoints.MapControllers();
             });
-        }
+        }    
     }
 }

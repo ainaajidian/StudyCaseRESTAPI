@@ -11,22 +11,22 @@ using System.Threading.Tasks;
 
 namespace EnrollmentService.Controllers
 {
-
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CoursesController : ControllerBase
+    public class CourseController : ControllerBase
     {
         private ICourse _course;
         private IMapper _mapper;
 
-        public CoursesController(ICourse course, IMapper mapper)
+        public CourseController(ICourse course, IMapper mapper)
         {
             _course = course ?? throw new ArgumentNullException(nameof(course));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
-        // GET: api/<CoursesController>
+        // GET: api/<CourseController>
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CourseDto>>> Get()
         {
@@ -34,7 +34,7 @@ namespace EnrollmentService.Controllers
             return Ok(_mapper.Map<IEnumerable<CourseDto>>(results));
         }
 
-        // GET api/<CoursesController>/5
+        // GET api/<CourseController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CourseDto>> Get(int id)
         {
@@ -45,16 +45,16 @@ namespace EnrollmentService.Controllers
             return Ok(_mapper.Map<CourseDto>(result));
         }
 
-        // POST api/<CoursesController>
+        // POST api/<CourseController>
         [HttpPost]
-        public async Task<ActionResult<Course>> Post([FromBody] CourseCreateDto courseCreateDto)
+        public async Task<ActionResult<CourseDto>> Post([FromBody] CourseCreateDto courseCreateDto)
         {
             try
             {
                 var course = _mapper.Map<Course>(courseCreateDto);
                 var result = await _course.Insert(course);
-                var courseReturn = _mapper.Map<CourseDto>(result);
-                return Ok(courseReturn);
+                var coursedto = _mapper.Map<CourseDto>(result);
+                return Ok(coursedto);
             }
             catch (Exception ex)
             {
@@ -62,16 +62,16 @@ namespace EnrollmentService.Controllers
             }
         }
 
-        // PUT api/<CoursesController>/5
+        // PUT api/<CourseController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<Course>> Put(int id, [FromBody] CourseCreateDto courseCreateDto)
+        public async Task<ActionResult<CourseDto>> Put(int id, [FromBody] CourseCreateDto courseCreateDto)
         {
             try
             {
                 var course = _mapper.Map<Course>(courseCreateDto);
                 var result = await _course.Update(id.ToString(), course);
-                var courseResult = _mapper.Map<CourseDto>(result);
-                return Ok(courseResult);
+                var coursedto = _mapper.Map<CourseDto>(result);
+                return Ok(coursedto);
             }
             catch (Exception ex)
             {
@@ -79,14 +79,14 @@ namespace EnrollmentService.Controllers
             }
         }
 
-        // DELETE api/<CoursesController>/5
+        // DELETE api/<CourseController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _course.Delete(id.ToString());
-                return Ok($"delete data id {id} berhasil");
+                return Ok($"delete data course id {id} berhasil");
             }
             catch (Exception ex)
             {
@@ -95,10 +95,10 @@ namespace EnrollmentService.Controllers
         }
 
         [HttpGet("bycoursename")]
-        public async Task<ActionResult<IEnumerable<CourseDto>>> GetByCourseName(string coursename)
+        public async Task<IEnumerable<Course>> GetByCourseName(string coursename)
         {
             var results = await _course.GetByCourseName(coursename);
-            return Ok(_mapper.Map<IEnumerable<CourseDto>>(results));
+            return results;
         }
     }
 }

@@ -2,13 +2,15 @@
 using EnrollmentService.Dtos;
 using EnrollmentService.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EnrollmentService.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -28,7 +30,7 @@ namespace EnrollmentService.Controllers
                 await _user.Registration(user);
                 return Ok($"Registrasi user {user.UserName} berhasil");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -48,7 +50,7 @@ namespace EnrollmentService.Controllers
                 await _user.AddRole(roleDto.RoleName);
                 return Ok($"Tambah role {roleDto.RoleName} berhasil");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -61,24 +63,31 @@ namespace EnrollmentService.Controllers
         }
 
         [HttpPost("UserInRole")]
-        public async Task<ActionResult> AddUserToRole(string username, string role)
+        public async Task<ActionResult> AddUsersRole(string username, string role)
         {
             try
             {
                 await _user.AddUserToRole(username, role);
-                return Ok($"Berhasil menambahkan user {username} ke role {role}");
+                return Ok($"Update role user {username} berhasil");
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("RolesByUser/{username}")]
-        public async Task<ActionResult<List<string>>> GetRolesByUser(string username)
+        public async Task<ActionResult<List<string>>> GetRolesFromUser(string username)
         {
-            var results = await _user.GetRolesFromUser(username);
-            return Ok(results);
+            try
+            {
+                var results = await _user.GetRolesFromUser(username);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -93,7 +102,7 @@ namespace EnrollmentService.Controllers
                     return BadRequest("username/password tidak tepat");
                 return Ok(user);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

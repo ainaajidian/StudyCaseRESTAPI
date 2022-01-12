@@ -1,4 +1,4 @@
-﻿namespace EnrollmentService.Helper
+﻿namespace EnrollmentService.Helpers
 {
     public class AppSettings
     {

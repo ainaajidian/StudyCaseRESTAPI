@@ -1,5 +1,5 @@
 ﻿using EnrollmentService.Dtos;
-using EnrollmentService.Helper;
+using EnrollmentService.Helpers;
 using EnrollmentService.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
