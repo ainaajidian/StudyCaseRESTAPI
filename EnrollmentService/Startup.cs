@@ -43,7 +43,10 @@ namespace EnrollmentService
                 options.Password.RequireDigit = true;
             }).AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
 
-            
+            services.AddScoped<IStudent, StudentDAL>();
+            services.AddScoped<ICourse, CourseDAL>();
+            services.AddScoped<IEnrollment, EnrollmentDAL>();
+            services.AddScoped<IUser, UserDAL>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
