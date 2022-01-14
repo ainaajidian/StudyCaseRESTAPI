@@ -1,17 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+using PaymentService.Controllers;
+using PaymentService.Data;
+using PaymentService.Models;
 namespace PaymentService
 {
     public class Startup
@@ -26,8 +29,19 @@ namespace PaymentService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("LocalConnection")));
+
+            services.AddScoped<IPayment, PaymentDAL>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //services.AddHttpClient<EnrollmentController>();
 
             services.AddControllers();
+
+            //services.AddControllers().AddNewtonsoftJson(options =>
+            //options.SerializerSettings.ReferenceLoopHandling =
+            //Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PaymentService", Version = "v1" });
@@ -44,7 +58,7 @@ namespace PaymentService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PaymentService v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

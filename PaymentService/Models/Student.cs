@@ -1,22 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
 namespace PaymentService.Models
 {
-    public partial class Student
+    public class Student
     {
-        public Student()
-        {
-            Enrollments = new HashSet<Enrollment>();
-        }
+        [Key]
+        public int StudentID { get; set; }
 
-        public int StudentId { get; set; }
+        [Required]
+        [MaxLength(100)]
         public string FirstName { get; set; }
+
+        [Required]
+        [MaxLength(100)]
         public string LastName { get; set; }
+
         public DateTime EnrollmentDate { get; set; }
 
-        public virtual ICollection<Enrollment> Enrollments { get; set; }
+        public ICollection<Enrollment> Enrollments { get; set; }
     }
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using PaymentService.Dtos;
-using PaymentService.Models;
 
 namespace PaymentService.Profiles
 {
@@ -12,7 +10,11 @@ namespace PaymentService.Profiles
     {
         public EnrollmentProfile()
         {
-            CreateMap<EnrollmentCreateDto, Enrollment>();
+
+            CreateMap<Dtos.EnrollmentCreateDto, Models.Enrollment>();
+
+            CreateMap<Models.Enrollment, Dtos.EnrollmentDto>();
+            CreateMap<Dtos.EnrollmentDto, Models.Enrollment>();
         }
     }
 }

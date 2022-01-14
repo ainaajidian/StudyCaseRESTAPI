@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -7,15 +8,15 @@ namespace PaymentService.Models
 {
     public partial class Course
     {
-        public Course()
-        {
-            Enrollments = new HashSet<Enrollment>();
-        }
+        public int CourseID { get; set; }
 
-        public int CourseId { get; set; }
+        [Required]
+        [MaxLength(100)]
         public string CourseName { get; set; }
+
+        [Required]
         public int CourseCredits { get; set; }
-        public double CoursePrice { get; set; }
+
 
         public virtual ICollection<Enrollment> Enrollments { get; set; }
     }
