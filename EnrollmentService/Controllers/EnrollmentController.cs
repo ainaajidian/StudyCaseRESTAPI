@@ -16,12 +16,13 @@ namespace EnrollmentService.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        private IPaymentDataClient _dataClient;
+        private IPaymentDataClient _paymentDataClient;
         private IEnrollment _enrollment;
         private IMapper _mapper;
-        public EnrollmentController(IEnrollment enrollment, IMapper mapper, IPaymentDataClient dataClient)
+
+        public EnrollmentController(IEnrollment enrollment, IMapper mapper, IPaymentDataClient paymentDataClient)
         {
-            _dataClient = dataClient;
+            _paymentDataClient = paymentDataClient ?? throw new ArgumentException(nameof(mapper));
             _enrollment = enrollment ?? throw new ArgumentNullException(nameof(enrollment));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -49,16 +50,28 @@ namespace EnrollmentService.Controllers
 
         // POST api/<EnrollmentsController>
         [HttpPost]
-        public async Task<ActionResult> CreateEnrollment(EnrollmentCreateDto enrollmentDto)
+        public async Task<ActionResult<EnrollmentDto>> Post([FromBody] EnrollmentCreateDto enrollmentCreateDto)
         {
             try
             {
-                await _dataClient.CreateEnrollmentFromPaymentService(enrollmentDto);
-                return Ok("Success");
+                var enrollment = _mapper.Map<Enrollment>(enrollmentCreateDto);
+                var result = await _enrollment.Insert(enrollment);
+                var enrollmentdto = _mapper.Map<EnrollmentDto>(result);
+
+                try
+                {
+                    await _paymentDataClient.CreateEnrollmentFromPaymentService(enrollmentdto);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"--> Could not send synchronously: {ex.Message}");
+                }
+
+                return Ok(enrollmentdto);  
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message);  
             }
         }
 
