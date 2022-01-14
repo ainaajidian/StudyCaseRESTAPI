@@ -14,6 +14,7 @@ namespace EnrollmentService.Data
         {
             _db = db;
         }
+
         public async Task Delete(string id)
         {
             try
@@ -30,22 +31,22 @@ namespace EnrollmentService.Data
 
         }
 
+
         public async Task<IEnumerable<Course>> GetAll()
         {
-            var results = await (from c in _db.Courses
-                                 orderby c.CourseName ascending
-                                 select c).AsNoTracking().ToListAsync();
+            var results = await (from s in _db.Courses
+                                 orderby s.CourseName ascending
+                                 select s).ToListAsync();
             return results;
         }
 
         public async Task<Course> GetById(string id)
         {
-            var result = await (from c in _db.Courses
-                                where c.CourseID == Convert.ToInt32(id)
-                                select c).SingleOrDefaultAsync();
-            if (result == null) throw new Exception($"data id {id} tidak ditemukan");
-
-            return result;
+            var result = await _db.Courses.Where(s => s.CourseID == Convert.ToInt32(id)).SingleOrDefaultAsync();
+            if (result != null)
+                return result;
+            else
+                throw new Exception("Data tidak ditemukan !");
         }
 
         public async Task<IEnumerable<Course>> GetByCourseName(string name)
@@ -87,5 +88,6 @@ namespace EnrollmentService.Data
                 throw new Exception(dbEx.Message);
             }
         }
+
     }
 }

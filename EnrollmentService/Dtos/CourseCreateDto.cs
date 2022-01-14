@@ -11,9 +11,6 @@ namespace EnrollmentService.Dtos
         [Required]
         public int CourseCredits { get; set; }
 
-        [Required]
-        public double CoursePrice { get; set; }
-
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (CourseName.Length >= 50)

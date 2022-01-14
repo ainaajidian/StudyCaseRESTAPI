@@ -8,9 +8,7 @@ namespace EnrollmentService.Dtos
 
         public string CourseName { get; set; }
 
-        public int CourseCredits { get; set; }
-
-        public double CoursePrice { get; set; }
+        public int TotalHours { get; set; }
 
     }
 }

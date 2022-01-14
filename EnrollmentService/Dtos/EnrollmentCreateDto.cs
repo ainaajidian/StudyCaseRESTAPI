@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using EnrollmentService.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace EnrollmentService.Dtos
 {
     public class EnrollmentCreateDto
     {
-        [Required]
-        public int CourseId { get; set; }
+        public int CourseID { get; set; }
 
-        [Required]
-        public int StudentId { get; set; }
+        public int StudentID { get; set; }
 
-        [Required]
-        public int Grade { get; set; }
+        public Grade? Grade { get; set; }
+
+        public float? Invoice { get; set; }
     }
 }

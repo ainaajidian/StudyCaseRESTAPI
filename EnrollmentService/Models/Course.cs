@@ -17,10 +17,7 @@ namespace EnrollmentService.Models
         [Required]
         public int CourseCredits { get; set; }
 
-        [Required]
-        public double CoursePrice{ get; set; }
-
-
+        
         public virtual ICollection<Enrollment> Enrollments { get; set; }
     }
 }

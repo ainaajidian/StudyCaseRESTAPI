@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EnrollmentService.Dtos;
 using Microsoft.Extensions.Configuration;
 
-
 namespace EnrollmentService.SyncHttpDataServices.Http
 {
-    public class HttpEnrollmentDataClient : IEnrollmentDataClient
+    public class HttpPaymentDataClient : IPaymentDataClient
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
 
-        public HttpEnrollmentDataClient()
+        public HttpPaymentDataClient()
         {
         }
 
-        public HttpEnrollmentDataClient(HttpClient httpClient, IConfiguration configuration)
+        public HttpPaymentDataClient(HttpClient httpClient, IConfiguration configuration)
         {
             _configuration = configuration;
             _httpClient = httpClient;
@@ -30,7 +31,7 @@ namespace EnrollmentService.SyncHttpDataServices.Http
                 Encoding.UTF8, "application/json"
             );
 
-            var response = await _httpClient.PostAsync(_configuration["PaymentService"], httpContent);
+            var response = await _httpClient.PostAsync(_configuration["PaymentService"], httpContent); 
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("--> Sync Post to Command Service Success -->");

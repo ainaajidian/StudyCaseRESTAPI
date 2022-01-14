@@ -4,7 +4,6 @@ using EnrollmentService.Dtos;
 using EnrollmentService.Models;
 using EnrollmentService.SyncHttpDataServices.Http;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,28 +16,29 @@ namespace EnrollmentService.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        private IEnrollmentDataClient _dataClient;
+        private IPaymentDataClient _dataClient;
         private IEnrollment _enrollment;
         private IMapper _mapper;
-        public EnrollmentController(IEnrollment enrollment, IMapper mapper, IEnrollmentDataClient dataClient)
+        public EnrollmentController(IEnrollment enrollment, IMapper mapper, IPaymentDataClient dataClient)
         {
             _dataClient = dataClient;
             _enrollment = enrollment ?? throw new ArgumentNullException(nameof(enrollment));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // GET: api/<EnrollmentController>
+        // GET: api/<EnrollmentsController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EnrollmentDto>>> Get()
         {
-            var results = await _enrollment.GetAll();
-            return Ok(_mapper.Map<IEnumerable<EnrollmentDto>>(results));
+            var enrollments = await _enrollment.GetAll();
+            var dtos = _mapper.Map<IEnumerable<EnrollmentDto>>(enrollments);
+            return Ok(dtos);
         }
 
 
-        // GET api/<EnrollmentController>/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<EnrollmentDto>> Get(int id)
+        // GET api/<EnrollmentsController>/5
+        [HttpGet("{id}", Name = "GetEnrollmentById")]
+        public async Task<ActionResult<EnrollmentDto>> GetEnrollmentById(int id)
         {
             var result = await _enrollment.GetById(id.ToString());
             if (result == null)
@@ -47,13 +47,13 @@ namespace EnrollmentService.Controllers
             return Ok(_mapper.Map<EnrollmentDto>(result));
         }
 
-        // POST api/<EnrollmentController>
+        // POST api/<EnrollmentsController>
         [HttpPost]
-        public async Task<ActionResult> EnrollmentCreate(EnrollmentCreateDto enrollmentCreateDto)
+        public async Task<ActionResult> CreateEnrollment(EnrollmentCreateDto enrollmentDto)
         {
             try
             {
-                await _dataClient.CreateEnrollmentFromPaymentService(enrollmentCreateDto);
+                await _dataClient.CreateEnrollmentFromPaymentService(enrollmentDto);
                 return Ok("Success");
             }
             catch (Exception ex)
@@ -62,36 +62,21 @@ namespace EnrollmentService.Controllers
             }
         }
 
-        // PUT api/<EnrollmentController>/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Enrollment>> Put(int id, [FromBody] EnrollmentCreateDto enrollmentToCreateDto)
-        {
-            try
-            {
-                var enrollment = _mapper.Map<Enrollment>(enrollmentToCreateDto);
-                var result = await _enrollment.Update(id.ToString(), enrollment);
-                var enrollmentdto = _mapper.Map<EnrollmentDto>(result);
-                return Ok(enrollmentdto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // DELETE api/<EnrollmentController>/5
+        // DELETE api/<EnrollmentsController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _enrollment.Delete(id.ToString());
-                return Ok($"delete data enrollment id {id} berhasil");
+                return Ok($"Data enrollment {id} berhasil di delete");
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+
     }
 }

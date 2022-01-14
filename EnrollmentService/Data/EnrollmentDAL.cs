@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EnrollmentService.Data;
 
 namespace EnrollmentService.Data
 {
@@ -16,38 +17,41 @@ namespace EnrollmentService.Data
             _db = db;
         }
 
+
+
         public async Task Delete(string id)
         {
             try
             {
                 var result = await GetById(id);
-                if (result == null) throw new Exception($"data course {id} tidak ditemukan");
+                if (result == null) throw new Exception($"Data course {id} tidak ditemukan !");
                 _db.Enrollments.Remove(result);
                 await _db.SaveChangesAsync();
             }
             catch (DbUpdateException dbEx)
             {
-                throw new Exception($"error: {dbEx.Message}");
+                throw new Exception($"Error: {dbEx.Message}");
             }
         }
 
         public async Task<IEnumerable<Enrollment>> GetAll()
         {
-            var results = await (from e in _db.Enrollments
-                                 orderby e.EnrollmentID ascending
-                                 select e).AsNoTracking().ToListAsync();
+            var results = await _db.Enrollments.Include(e => e.Student)
+               .Include(e => e.Course).ToListAsync();
             return results;
         }
 
         public async Task<Enrollment> GetById(string id)
         {
-            var result = await (from e in _db.Enrollments
-                                where e.EnrollmentID == Convert.ToInt32(id)
-                                select e).SingleOrDefaultAsync();
-            if (result == null) throw new Exception($"data id {id} tidak ditemukan");
+            var result = await (from c in _db.Enrollments
+                                where c.EnrollmentID == Convert.ToInt32(id)
+                                select c).SingleOrDefaultAsync();
+            if (result == null) throw new Exception($"Data id {id} tidak ditemukan !");
 
             return result;
         }
+
+
 
         public async Task<Enrollment> Insert(Enrollment obj)
         {
@@ -63,17 +67,19 @@ namespace EnrollmentService.Data
             }
         }
 
+
+
         public async Task<Enrollment> Update(string id, Enrollment obj)
         {
             try
             {
                 var result = await GetById(id);
+                if (result == null) throw new Exception($"data course id {id} tidak ditemukan");
                 result.CourseID = obj.CourseID;
                 result.StudentID = obj.StudentID;
-                result.Grade = obj.Grade;
+                result.Invoice = obj.Invoice;
                 await _db.SaveChangesAsync();
-                obj.EnrollmentID = Convert.ToInt32(id);
-                return obj;
+                return result;
             }
             catch (DbUpdateException dbEx)
             {

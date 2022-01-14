@@ -8,9 +8,10 @@ namespace EnrollmentService.Profiles
     {
         public EnrollmentProfile()
         {
+            CreateMap<Enrollment, EnrollmentDto>();
+
             CreateMap<EnrollmentCreateDto, Enrollment>();
             CreateMap<EnrollmentDto, Enrollment>();
-            CreateMap<Enrollment, EnrollmentDto>();
         }
     }
 }
