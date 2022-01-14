@@ -19,7 +19,6 @@ namespace EnrollmentService.Controllers
         private IPaymentDataClient _paymentDataClient;
         private IEnrollment _enrollment;
         private IMapper _mapper;
-
         public EnrollmentController(IEnrollment enrollment, IMapper mapper, IPaymentDataClient paymentDataClient)
         {
             _paymentDataClient = paymentDataClient ?? throw new ArgumentException(nameof(mapper));

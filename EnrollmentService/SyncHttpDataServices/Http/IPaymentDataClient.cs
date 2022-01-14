@@ -5,6 +5,6 @@ namespace EnrollmentService.SyncHttpDataServices.Http
 {
     public interface IPaymentDataClient
     {
-        Task CreateEnrollmentFromPaymentService(EnrollmentCreateDto enrollment);
+        Task CreateEnrollmentFromPaymentService(EnrollmentDto enrollment);
     }
 }

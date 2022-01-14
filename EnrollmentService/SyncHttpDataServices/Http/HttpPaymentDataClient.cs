@@ -24,7 +24,7 @@ namespace EnrollmentService.SyncHttpDataServices.Http
             _configuration = configuration;
             _httpClient = httpClient;
         }
-        public async Task CreateEnrollmentFromPaymentService(EnrollmentCreateDto enrollment)
+        public async Task CreateEnrollmentFromPaymentService(EnrollmentDto enrollment)
         {
             var httpContent = new StringContent(
                 JsonSerializer.Serialize(enrollment),
