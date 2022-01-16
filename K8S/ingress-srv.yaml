@@ -10,14 +10,14 @@ spec:
   - host: studycase.com
     http:
       paths:
-      - path: /api/enrollments
+      - path: /api/enrollment
         pathType: Prefix
         backend:
           service:
             name: enrollment-clusterip-srv
             port: 
               number: 80
-      - path: /api/p/enrollments
+      - path: /api/p/enrollment
         pathType: Prefix
         backend:
           service:

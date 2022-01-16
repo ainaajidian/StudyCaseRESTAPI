@@ -32,18 +32,8 @@ namespace PaymentService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (_env.IsProduction())
-            {
-                Console.WriteLine("--> Using Sql Server Linux 2019 Db");
-                services.AddDbContext<AppDbContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("PaymentsConn")));
-            }
-            else
-            {
-                Console.WriteLine("--> Using Local Sql Server");
-                services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LocalConnection")));
-            }
 
             services.AddScoped<IPayment, PaymentDAL>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

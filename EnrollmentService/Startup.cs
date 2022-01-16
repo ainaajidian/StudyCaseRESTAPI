@@ -38,18 +38,11 @@ namespace EnrollmentService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (_env.IsProduction())
-            {
-                Console.WriteLine("--> Using Sql Server Linux 2019 Db");
-                services.AddDbContext<ApplicationDbContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("EnrollmentsConn")));
-            }
-            else
-            {
-                Console.WriteLine("--> Using Local Sql Server");
-                services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LocalConnection")));
-            }
+            
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("LocalConnection")));
+
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 8;
